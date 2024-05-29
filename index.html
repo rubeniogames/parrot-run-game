@@ -18,8 +18,14 @@
             background-color: #DEB887;
             touch-action: none; /* Disable default touch actions */
         }
-        #rollButton {
+        #controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             margin: 10px;
+        }
+        #rollButton, #endTurnButton {
+            margin: 0 10px;
             padding: 10px 20px;
             font-size: 16px;
             background-color: #DAA520;
@@ -53,7 +59,11 @@
         <div id="die1" class="die">-</div>
         <div id="die2" class="die">-</div>
     </div>
-    <button id="rollButton">Бросить кубики</button>
+    <div id="controls">
+        <button id="rollButton">Бросить кубики</button>
+        <button id="endTurnButton">Закончить ход</button>
+    </div>
+    <div id="currentPlayer"></div>
     <script src="game.js"></script>
 </body>
 </html>
