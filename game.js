@@ -1,122 +1,82 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const boardWidth = canvas.width;
+const boardHeight = canvas.height;
 
-let platform = {
-    width: 150,
-    height: 20,
-    x: canvas.width / 2 - 75,
-    y: canvas.height - 30,
-    dx: 0
+const pointWidth = boardWidth / 15;
+const pointHeight = boardHeight / 2;
+const checkersRadius = pointWidth / 2.5;
+
+const board = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // top points
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]   // bottom points
+];
+
+// Начальная расстановка фишек
+const initialSetup = () => {
+    board[0][0] = -2; board[1][0] = 2;
+    board[0][11] = -5; board[1][11] = 5;
+    board[0][16] = -3; board[1][16] = 3;
+    board[0][18] = -5; board[1][18] = 5;
 };
 
-let ball = {
-    radius: 15,
-    x: canvas.width / 2,
-    y: canvas.height / 2,
-    dx: 4,
-    dy: 4
+const drawBoard = () => {
+    ctx.clearRect(0, 0, boardWidth, boardHeight);
+
+    // Рисуем точки
+    for (let i = 0; i < 15; i++) {
+        // Верхние точки
+        ctx.fillStyle = (i % 2 === 0) ? 'white' : 'black';
+        ctx.beginPath();
+        ctx.moveTo(i * pointWidth, 0);
+        ctx.lineTo((i + 1) * pointWidth, 0);
+        ctx.lineTo((i + 0.5) * pointWidth, pointHeight);
+        ctx.fill();
+
+        // Нижние точки
+        ctx.beginPath();
+        ctx.moveTo(i * pointWidth, boardHeight);
+        ctx.lineTo((i + 1) * pointWidth, boardHeight);
+        ctx.lineTo((i + 0.5) * pointWidth, boardHeight - pointHeight);
+        ctx.fill();
+    }
+
+    // Рисуем бар
+    ctx.fillStyle = 'gray';
+    ctx.fillRect(boardWidth / 2 - pointWidth / 2, 0, pointWidth, boardHeight);
 };
 
-// Обработчики клавиатуры
-document.addEventListener('keydown', keyDownHandler);
-document.addEventListener('keyup', keyUpHandler);
-
-// Обработчики сенсорного экрана
-canvas.addEventListener('touchstart', touchStartHandler);
-canvas.addEventListener('touchmove', touchMoveHandler);
-canvas.addEventListener('touchend', touchEndHandler);
-
-function keyDownHandler(e) {
-    if (e.key === 'ArrowRight') {
-        platform.dx = 7;
-    } else if (e.key === 'ArrowLeft') {
-        platform.dx = -7;
-    }
-}
-
-function keyUpHandler(e) {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-        platform.dx = 0;
-    }
-}
-
-function touchStartHandler(e) {
-    e.preventDefault();
-    const touchX = e.touches[0].clientX;
-    if (touchX > platform.x + platform.width / 2) {
-        platform.dx = 7;
-    } else {
-        platform.dx = -7;
-    }
-}
-
-function touchMoveHandler(e) {
-    e.preventDefault();
-    const touchX = e.touches[0].clientX;
-    if (touchX > platform.x + platform.width / 2) {
-        platform.dx = 7;
-    } else {
-        platform.dx = -7;
-    }
-}
-
-function touchEndHandler(e) {
-    e.preventDefault();
-    platform.dx = 0;
-}
-
-function drawPlatform() {
-    ctx.fillStyle = '#0095DD';
-    ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
-}
-
-function drawBall() {
-    ctx.beginPath();
-    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-    ctx.fillStyle = '#0095DD';
-    ctx.fill();
-    ctx.closePath();
-}
-
-function movePlatform() {
-    platform.x += platform.dx;
-    if (platform.x < 0) {
-        platform.x = 0;
-    } else if (platform.x + platform.width > canvas.width) {
-        platform.x = canvas.width - platform.width;
-    }
-}
-
-function moveBall() {
-    ball.x += ball.dx;
-    ball.y += ball.dy;
-
-    if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
-        ball.dx = -ball.dx;
-    }
-
-    if (ball.y - ball.radius < 0) {
-        ball.dy = -ball.dy;
-    } else if (ball.y + ball.radius > canvas.height) {
-        if (ball.x > platform.x && ball.x < platform.x + platform.width) {
-            ball.dy = -ball.dy;
-        } else {
-            // Логика конца игры
-            document.location.reload();
+const drawCheckers = () => {
+    for (let i = 0; i < 15; i++) {
+        if (board[0][i] !== 0) {
+            drawChecker(i, 0, board[0][i]);
+        }
+        if (board[1][i] !== 0) {
+            drawChecker(i, 1, board[1][i]);
         }
     }
-}
+};
 
-function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawPlatform();
-    drawBall();
-    movePlatform();
-    moveBall();
-    requestAnimationFrame(draw);
-}
+const drawChecker = (point, row, count) => {
+    const isTop = row === 0;
+    const color = count > 0 ? 'black' : 'white';
+    const absCount = Math.abs(count);
 
-draw();
+    for (let i = 0; i < absCount; i++) {
+        const x = point * pointWidth + pointWidth / 2;
+        const y = isTop ? checkersRadius + i * 2 * checkersRadius : boardHeight - checkersRadius - i * 2 * checkersRadius;
+
+        ctx.beginPath();
+        ctx.arc(x, y, checkersRadius, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.stroke();
+    }
+};
+
+// Функции для обработки логики игры
+
+initialSetup();
+drawBoard();
+drawCheckers();
