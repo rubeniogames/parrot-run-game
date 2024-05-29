@@ -1,5 +1,14 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+const rollButton = document.getElementById('rollButton');
+
+// Адаптация размера canvas под экран
+const resizeCanvas = () => {
+    canvas.width = window.innerWidth * 0.9;
+    canvas.height = window.innerHeight * 0.7;
+};
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
 const boardWidth = canvas.width;
 const boardHeight = canvas.height;
@@ -13,19 +22,20 @@ const board = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]   // bottom points
 ];
 
-// Начальная расстановка фишек
+// Начальная расстановка фишек по правилам длинных нард
 const initialSetup = () => {
-    board[0][0] = -2; board[1][0] = 2;
-    board[0][11] = -5; board[1][11] = 5;
-    board[0][16] = -3; board[1][16] = 3;
-    board[0][18] = -5; board[1][18] = 5;
+    for (let i = 0; i < 15; i++) {
+        board[0][i] = -1; // Черные фишки (верхние)
+        board[1][i] = 1;  // Белые фишки (нижние)
+    }
 };
 
 let selectedChecker = null;
-let currentPlayer = 1; // 1 - player, -1 - computer
+let currentPlayer = 1; // 1 - игрок, -1 - компьютер
+let dice = [0, 0];
 
 const rollDice = () => {
-    return Math.floor(Math.random() * 6) + 1;
+    return [Math.floor(Math.random() * 6) + 1, Math.floor(Math.random() * 6) + 1];
 };
 
 const drawBoard = () => {
@@ -67,7 +77,7 @@ const drawCheckers = () => {
 
 const drawChecker = (point, row, count) => {
     const isTop = row === 0;
-    const color = count > 0 ? 'black' : 'white';
+    const color = count > 0 ? 'white' : 'black';
     const absCount = Math.abs(count);
 
     for (let i = 0; i < absCount; i++) {
@@ -94,7 +104,7 @@ const moveChecker = (from, to) => {
 
     const checker = board[fromRow][from.point];
     board[fromRow][from.point] = 0;
-    board[toRow][to.point] = currentPlayer;
+    board[toRow][to.point] = checker;
 
     drawBoard();
     drawCheckers();
@@ -105,7 +115,7 @@ canvas.addEventListener('touchstart', (e) => {
     const touch = e.touches[0];
     const { point, isTop } = getCheckerAt(touch.clientX, touch.clientY);
 
-    if ((isTop === 0 && board[0][point] > 0) || (isTop === 1 && board[1][point] > 0)) {
+    if ((isTop === 0 && board[0][point] < 0) || (isTop === 1 && board[1][point] > 0)) {
         selectedChecker = { point, isTop };
     }
 });
@@ -118,6 +128,12 @@ canvas.addEventListener('touchmove', (e) => {
         selectedChecker = null;
         currentPlayer *= -1; // Переключаем игрока
     }
+});
+
+rollButton.addEventListener('click', () => {
+    dice = rollDice();
+    console.log(`Бросок кубиков: ${dice[0]}, ${dice[1]}`);
+    // Здесь можно добавить логику для отображения значений кубиков и обработки ходов
 });
 
 // Основная логика игры
