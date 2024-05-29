@@ -1,6 +1,8 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const rollButton = document.getElementById('rollButton');
+const die1 = document.getElementById('die1');
+const die2 = document.getElementById('die2');
 
 // Адаптация размера canvas под экран
 const resizeCanvas = () => {
@@ -33,6 +35,7 @@ const initialSetup = () => {
 let selectedChecker = null;
 let currentPlayer = 1; // 1 - игрок, -1 - компьютер
 let dice = [0, 0];
+let movesRemaining = [];
 
 const rollDice = () => {
     return [Math.floor(Math.random() * 6) + 1, Math.floor(Math.random() * 6) + 1];
@@ -124,16 +127,27 @@ canvas.addEventListener('touchmove', (e) => {
     e.preventDefault();
     if (selectedChecker) {
         const touch = e.touches[0];
-        moveChecker(selectedChecker, getCheckerAt(touch.clientX, touch.clientY));
-        selectedChecker = null;
-        currentPlayer *= -1; // Переключаем игрока
+        const target = getCheckerAt(touch.clientX, touch.clientY);
+
+        // Проверка, допустимо ли перемещение на цель
+        const moveDistance = Math.abs(target.point - selectedChecker.point);
+        if (movesRemaining.includes(moveDistance)) {
+            moveChecker(selectedChecker, target);
+            movesRemaining.splice(movesRemaining.indexOf(moveDistance), 1);
+            selectedChecker = null;
+            if (movesRemaining.length === 0) {
+                currentPlayer *= -1; // Переключаем игрока
+            }
+        }
     }
 });
 
 rollButton.addEventListener('click', () => {
     dice = rollDice();
+    die1.textContent = dice[0];
+    die2.textContent = dice[1];
+    movesRemaining = dice;
     console.log(`Бросок кубиков: ${dice[0]}, ${dice[1]}`);
-    // Здесь можно добавить логику для отображения значений кубиков и обработки ходов
 });
 
 // Основная логика игры
