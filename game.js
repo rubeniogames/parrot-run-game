@@ -20,8 +20,14 @@ let ball = {
     dy: 4
 };
 
+// Обработчики клавиатуры
 document.addEventListener('keydown', keyDownHandler);
 document.addEventListener('keyup', keyUpHandler);
+
+// Обработчики сенсорного экрана
+canvas.addEventListener('touchstart', touchStartHandler);
+canvas.addEventListener('touchmove', touchMoveHandler);
+canvas.addEventListener('touchend', touchEndHandler);
 
 function keyDownHandler(e) {
     if (e.key === 'ArrowRight') {
@@ -35,6 +41,31 @@ function keyUpHandler(e) {
     if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
         platform.dx = 0;
     }
+}
+
+function touchStartHandler(e) {
+    e.preventDefault();
+    const touchX = e.touches[0].clientX;
+    if (touchX > platform.x + platform.width / 2) {
+        platform.dx = 7;
+    } else {
+        platform.dx = -7;
+    }
+}
+
+function touchMoveHandler(e) {
+    e.preventDefault();
+    const touchX = e.touches[0].clientX;
+    if (touchX > platform.x + platform.width / 2) {
+        platform.dx = 7;
+    } else {
+        platform.dx = -7;
+    }
+}
+
+function touchEndHandler(e) {
+    e.preventDefault();
+    platform.dx = 0;
 }
 
 function drawPlatform() {
@@ -73,7 +104,7 @@ function moveBall() {
         if (ball.x > platform.x && ball.x < platform.x + platform.width) {
             ball.dy = -ball.dy;
         } else {
-            // Game over logic
+            // Логика конца игры
             document.location.reload();
         }
     }
