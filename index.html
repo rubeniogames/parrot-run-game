@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Нарды</title>
+    <title>Длинные Нарды</title>
     <style>
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -15,11 +16,22 @@
         }
         canvas {
             background-color: #DEB887;
+            touch-action: none; /* Disable default touch actions */
+        }
+        #rollButton {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #DAA520;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <canvas id="gameCanvas"></canvas>
+    <button id="rollButton">Бросить кубики</button>
     <script src="game.js"></script>
 </body>
 </html>
