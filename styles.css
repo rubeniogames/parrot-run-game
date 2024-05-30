@@ -1,3 +1,4 @@
+/* styles.css */
 body, html {
     margin: 0;
     padding: 0;
@@ -7,12 +8,13 @@ body, html {
 }
 
 #app {
-    background: url('5313a2454325fb810596a80cde0d4727.jpg') no-repeat center center fixed;
+    background: url('path/to/your/image.jpg') no-repeat center center fixed;
     background-size: cover;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    flex-direction: column;
 }
 
 .screen {
