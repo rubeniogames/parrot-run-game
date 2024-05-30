@@ -1,0 +1,52 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+#app {
+    background: url('5313a2454325fb810596a80cde0d4727.jpg') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hidden {
+    display: none;
+}
+
+h1 {
+    color: white;
+}
+
+input {
+    padding: 10px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
