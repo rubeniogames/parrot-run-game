@@ -1,0 +1,55 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+#game-board {
+    width: 600px;
+    height: 300px;
+    display: grid;
+    grid-template-columns: repeat(24, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 1px;
+    background-color: #8b4513; /* Brown background */
+}
+
+.triangle {
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+}
+
+.triangle.white {
+    background-color: #ffffff;
+}
+
+.triangle.black {
+    background-color: #000000;
+}
+
+.checker {
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    margin: auto;
+}
+
+.checker.white {
+    background-color: #ffffff;
+}
+
+.checker.black {
+    background-color: #000000;
+}
+
+#controls {
+    margin-top: 20px;
+}
+
+#dice-result {
+    margin-top: 10px;
+}
