@@ -1,4 +1,3 @@
-// app.js
 document.addEventListener("DOMContentLoaded", function() {
     const startButton = document.getElementById('start-button');
     const playButton = document.getElementById('play-button');
