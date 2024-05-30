@@ -1,20 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Backgammon Game</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Длинные Нарды</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #8B4513;
+        }
+        canvas {
+            background-color: #DEB887;
+            touch-action: none; /* Disable default touch actions */
+        }
+        #controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px;
+        }
+        #rollButton, #endTurnButton {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #DAA520;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #dice {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px;
+        }
+        .die {
+            width: 50px;
+            height: 50px;
+            margin: 0 10px;
+            font-size: 24px;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+            border: 1px solid #000;
+        }
+    </style>
 </head>
 <body>
-    <div id="game-board">
-        <!-- Game board will be rendered here -->
+    <canvas id="gameCanvas"></canvas>
+    <div id="dice">
+        <div id="die1" class="die">-</div>
+        <div id="die2" class="die">-</div>
     </div>
     <div id="controls">
-        <button id="roll-dice">Roll Dice</button>
-        <div id="dice-result"></div>
-        <div id="current-player">Current Player: White</div>
+        <button id="rollButton">Бросить кубики</button>
+        <button id="endTurnButton">Закончить ход</button>
     </div>
-    <script src="script.js"></script>
+    <div id="currentPlayer"></div>
+    <script src="game.js"></script>
 </body>
 </html>
