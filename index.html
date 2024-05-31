@@ -4,33 +4,126 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Backgammon Game</title>
-    <link rel="stylesheet" href="styles.css">
-    <!-- Telegram Login Widget Script -->
-    <script async src="https://telegram.org/js/telegram-widget.js?15" 
-            data-telegram-login="YOUR_BOT_USERNAME" 
-            data-size="large" 
-            data-userpic="false" 
-            data-auth-url="https://yourwebsite.com/auth/telegram" 
-            data-request-access="write">
-    </script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        #main-menu, #game-screen {
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+        }
+        .screen {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .button {
+            padding: 15px 25px;
+            margin: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .button:active {
+            background-color: #45a049;
+        }
+        #game-board {
+            background-image: url('game-board.jpg'); /* Укажите здесь путь к вашему изображению игрового поля */
+            background-size: cover;
+            width: 100%;
+            height: 500px;
+            position: relative;
+        }
+        .checker {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            position: absolute;
+        }
+        .white-checker {
+            background-color: white;
+        }
+        .black-checker {
+            background-color: black;
+        }
+    </style>
 </head>
 <body>
-    <div id="app">
-        <div id="welcome-screen" class="screen">
-            <h1>Как вас зовут?</h1>
-            <input type="text" id="username" placeholder="Введите ваше имя">
-            <button id="start-button">Начать</button>
-        </div>
-        <div id="main-menu" class="screen hidden">
-            <button class="menu-button" id="play-button">Играть</button>
-            <button class="menu-button" id="settings-button">Настройки</button>
-            <button class="menu-button" id="wallet-button">Пополнить кошелек</button>
-        </div>
-        <div id="under-construction" class="screen hidden">
-            <button id="back-button" class="back-button">←</button>
-            <h1>Игра находится в разработке, приходите позднее.</h1>
-        </div>
+    <div id="main-menu" class="screen active">
+        <h1>Backgammon Game</h1>
+        <button class="button" onclick="startGame()">Играть</button>
+        <button class="button" onclick="showSettings()">Настройки</button>
+        <button class="button" onclick="showWallet()">Пополнить кошелек</button>
     </div>
-    <script src="app.js"></script>
+    <div id="game-screen" class="screen">
+        <button class="button" onclick="goBack()">Назад</button>
+        <div id="game-board"></div>
+    </div>
+    <div id="settings-screen" class="screen">
+        <button class="button" onclick="goBack()">Назад</button>
+        <p>Настройки находятся в разработке, приходите позднее.</p>
+    </div>
+    <div id="wallet-screen" class="screen">
+        <button class="button" onclick="goBack()">Назад</button>
+        <p>Пополнение кошелька находится в разработке, приходите позднее.</p>
+    </div>
+
+    <script>
+        function startGame() {
+            document.getElementById('main-menu').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+            initializeCheckers();
+        }
+
+        function goBack() {
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+            document.getElementById('main-menu').classList.add('active');
+        }
+
+        function showSettings() {
+            document.getElementById('main-menu').classList.remove('active');
+            document.getElementById('settings-screen').classList.add('active');
+        }
+
+        function showWallet() {
+            document.getElementById('main-menu').classList.remove('active');
+            document.getElementById('wallet-screen').classList.add('active');
+        }
+
+        function initializeCheckers() {
+            const gameBoard = document.getElementById('game-board');
+            gameBoard.innerHTML = ''; // Очистка доски перед размещением фишек
+
+            // Добавляем белые фишки
+            for (let i = 0; i < 15; i++) {
+                const checker = document.createElement('div');
+                checker.classList.add('checker', 'white-checker');
+                // Устанавливаем начальные координаты для каждой фишки
+                checker.style.top = `${10 + i * 20}px`;
+                checker.style.left = '10px';
+                gameBoard.appendChild(checker);
+            }
+
+            // Добавляем черные фишки
+            for (let i = 0; i < 15; i++) {
+                const checker = document.createElement('div');
+                checker.classList.add('checker', 'black-checker');
+                // Устанавливаем начальные координаты для каждой фишки
+                checker.style.top = `${10 + i * 20}px`;
+                checker.style.right = '10px';
+                gameBoard.appendChild(checker);
+            }
+        }
+    </script>
 </body>
 </html>
