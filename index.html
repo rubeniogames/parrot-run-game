@@ -12,11 +12,13 @@
             height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
         }
         #main-menu, #game-screen {
             text-align: center;
             width: 100%;
             max-width: 600px;
+            padding: 20px;
         }
         .screen {
             display: none;
@@ -38,15 +40,17 @@
             background-color: #45a049;
         }
         #game-board {
+            width: 100%;
+            height: 0;
+            padding-bottom: 50%;
             background-image: url('game-board.jpg'); /* Укажите здесь путь к вашему изображению игрового поля */
             background-size: cover;
-            width: 100%;
-            height: 500px;
+            background-position: center;
             position: relative;
         }
         .checker {
-            width: 40px;
-            height: 40px;
+            width: 5%;
+            height: 5%;
             border-radius: 50%;
             position: absolute;
         }
@@ -109,8 +113,8 @@
                 const checker = document.createElement('div');
                 checker.classList.add('checker', 'white-checker');
                 // Устанавливаем начальные координаты для каждой фишки
-                checker.style.top = `${10 + i * 20}px`;
-                checker.style.left = '10px';
+                checker.style.top = `${1 + i * 3}%`;
+                checker.style.left = '1%';
                 gameBoard.appendChild(checker);
             }
 
@@ -119,8 +123,8 @@
                 const checker = document.createElement('div');
                 checker.classList.add('checker', 'black-checker');
                 // Устанавливаем начальные координаты для каждой фишки
-                checker.style.top = `${10 + i * 20}px`;
-                checker.style.right = '10px';
+                checker.style.top = `${1 + i * 3}%`;
+                checker.style.right = '1%';
                 gameBoard.appendChild(checker);
             }
         }
