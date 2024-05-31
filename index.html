@@ -48,17 +48,12 @@
             background-position: center;
             position: relative;
         }
-        .checker {
-            width: 5%;
-            height: 5%;
-            border-radius: 50%;
+        .point {
             position: absolute;
-        }
-        .white-checker {
-            background-color: white;
-        }
-        .black-checker {
-            background-color: black;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: red;
         }
     </style>
 </head>
@@ -83,10 +78,12 @@
     </div>
 
     <script>
+        let points = []; // Массив для хранения объектов точек
+
         function startGame() {
             document.getElementById('main-menu').classList.remove('active');
             document.getElementById('game-screen').classList.add('active');
-            initializeCheckers();
+            initializePoints();
         }
 
         function goBack() {
@@ -104,29 +101,32 @@
             document.getElementById('wallet-screen').classList.add('active');
         }
 
-        function initializeCheckers() {
+        function initializePoints() {
             const gameBoard = document.getElementById('game-board');
-            gameBoard.innerHTML = ''; // Очистка доски перед размещением фишек
+            gameBoard.innerHTML = ''; // Очистка доски перед размещением точек
 
-            // Добавляем белые фишки
-            for (let i = 0; i < 15; i++) {
-                const checker = document.createElement('div');
-                checker.classList.add('checker', 'white-checker');
-                // Устанавливаем начальные координаты для каждой фишки
-                checker.style.top = `${1 + i * 3}%`;
-                checker.style.left = '1%';
-                gameBoard.appendChild(checker);
+            // Создаем объекты точек и добавляем их в массив
+            for (let i = 1; i <= 24; i++) {
+                const point = document.createElement('div');
+                point.classList.add('point');
+                point.style.top = '50%'; // Пока что устанавливаем координаты по центру
+                point.style.left = '50%'; // Пока что устанавливаем координаты по центру
+                gameBoard.appendChild(point);
+                points.push({
+                    number: i,
+                    element: point
+                });
             }
 
-            // Добавляем черные фишки
-            for (let i = 0; i < 15; i++) {
-                const checker = document.createElement('div');
-                checker.classList.add('checker', 'black-checker');
-                // Устанавливаем начальные координаты для каждой фишки
-                checker.style.top = `${1 + i * 3}%`;
-                checker.style.right = '1%';
-                gameBoard.appendChild(checker);
-            }
+            // Устанавливаем координаты для каждой точки в зависимости от их порядкового номера
+            points.forEach((point, index) => {
+                if (index < 12) {
+                    point.element.style.left = `${5 + index * 7}%`;
+                } else {
+                    point.element.style.left = `${5 + (index - 12) * 7}%`;
+                    point.element.style.top = '80%';
+                }
+            });
         }
     </script>
 </body>
