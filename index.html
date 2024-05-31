@@ -41,10 +41,10 @@
         }
         #game-board {
             width: 100%;
-            height: 0;
-            padding-bottom: 50%;
+            height: calc(100vh - 70px); /* Высота экрана минус высота кнопки */
             background-image: url('game-board.jpg'); /* Укажите здесь путь к вашему изображению игрового поля */
-            background-size: cover;
+            background-size: contain;
+            background-repeat: no-repeat;
             background-position: center;
             position: relative;
         }
