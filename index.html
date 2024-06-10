@@ -15,7 +15,7 @@
             margin: 0;
             background-color: #f0f0f0;
         }
-        #main-screen, #result-screen, #game-screen {
+        #main-screen, #result-screen, #game-screen, #play-screen {
             display: none;
             flex-direction: column;
             align-items: center;
@@ -33,9 +33,24 @@
             font-size: 24px;
             cursor: pointer;
         }
-        canvas {
+        #gameCanvas {
             border: 1px solid #000;
             background-color: #fff;
+        }
+        .score {
+            position: absolute;
+            top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .start-button {
+            padding: 20px;
+            font-size: 24px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -44,7 +59,7 @@
         <button onclick="showResult('Бруйко')">Иван</button>
         <button onclick="showResult('Бруйко')">Милана</button>
         <button onclick="showResult('Петросян')">Рубен</button>
-        <button onclick="startGame()">Игра</button>
+        <button onclick="showGameScreen()">Игра</button>
     </div>
     <div id="result-screen">
         <div class="back-button" onclick="goBack()">←</div>
@@ -52,28 +67,38 @@
     </div>
     <div id="game-screen">
         <div class="back-button" onclick="goBack()">←</div>
+        <button class="start-button" onclick="startGame()">START</button>
+    </div>
+    <div id="play-screen">
+        <div class="back-button" onclick="goBack()">←</div>
         <canvas id="gameCanvas" width="600" height="400"></canvas>
+        <div class="score" id="score">0</div>
     </div>
 
     <script>
         const mainScreen = document.getElementById('main-screen');
         const resultScreen = document.getElementById('result-screen');
         const gameScreen = document.getElementById('game-screen');
+        const playScreen = document.getElementById('play-screen');
         const resultText = document.getElementById('result-text');
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+        const scoreDisplay = document.getElementById('score');
 
         let ball = {
             x: canvas.width / 2,
-            y: canvas.height - 30,
-            radius: 10,
+            y: canvas.height - 90,
+            radius: 30,
             dx: 2,
-            dy: -2,
+            dy: 0,
             speed: 2,
-            jump: -10,
+            jump: -15,
             gravity: 0.5
         };
 
+        let obstacles = [];
+        let score = 0;
+        let gameInterval;
         let rightPressed = false;
         let leftPressed = false;
         let upPressed = false;
@@ -88,60 +113,96 @@
             mainScreen.style.display = 'flex';
             resultScreen.style.display = 'none';
             gameScreen.style.display = 'none';
+            playScreen.style.display = 'none';
+            clearInterval(gameInterval);
+        }
+
+        function showGameScreen() {
+            mainScreen.style.display = 'none';
+            gameScreen.style.display = 'flex';
         }
 
         function startGame() {
-            mainScreen.style.display = 'none';
-            gameScreen.style.display = 'flex';
-            resetBall();
-            draw();
+            gameScreen.style.display = 'none';
+            playScreen.style.display = 'flex';
+            resetGame();
+            gameInterval = setInterval(draw, 10);
         }
 
-        function resetBall() {
+        function resetGame() {
             ball.x = canvas.width / 2;
-            ball.y = canvas.height - 30;
-            ball.dx = 0;
+            ball.y = canvas.height - ball.radius - 10;
+            ball.dx = 2;
             ball.dy = 0;
+            obstacles = [];
+            score = 0;
+            scoreDisplay.textContent = score;
+            generateObstacles();
+        }
+
+        function generateObstacles() {
+            const spacing = 10 * 20; // 10 times the obstacle size (20)
+            for (let i = 0; i < 5; i++) {
+                let obstacle = {
+                    x: canvas.width + i * spacing,
+                    y: canvas.height - 30,
+                    width: 20,
+                    height: 20
+                };
+                obstacles.push(obstacle);
+            }
         }
 
         function drawBall() {
             ctx.beginPath();
             ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-            ctx.fillStyle = "#0095DD";
+            ctx.fillStyle = "#FF0000";
             ctx.fill();
             ctx.closePath();
         }
 
-        function drawRoad() {
-            ctx.beginPath();
-            ctx.rect(0, canvas.height - 10, canvas.width, 10);
+        function drawObstacles() {
             ctx.fillStyle = "#000";
-            ctx.fill();
-            ctx.closePath();
+            obstacles.forEach(obstacle => {
+                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            });
         }
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawRoad();
             drawBall();
+            drawObstacles();
 
-            if(rightPressed && ball.x < canvas.width - ball.radius) {
-                ball.x += ball.speed;
+            ball.x += ball.dx;
+            if (rightPressed) {
+                ball.dx += 0.1;
             }
-            if(leftPressed && ball.x > ball.radius) {
-                ball.x -= ball.speed;
-            }
-            if(upPressed && ball.y == canvas.height - ball.radius - 10) {
+            if (upPressed && ball.y == canvas.height - ball.radius - 10) {
                 ball.dy = ball.jump;
             }
-
             ball.dy += ball.gravity;
             ball.y += ball.dy;
 
-            if(ball.y > canvas.height - ball.radius - 10) {
+            if (ball.y > canvas.height - ball.radius - 10) {
                 ball.y = canvas.height - ball.radius - 10;
                 ball.dy = 0;
             }
+
+            obstacles.forEach(obstacle => {
+                obstacle.x -= ball.dx;
+                if (obstacle.x + obstacle.width < 0) {
+                    obstacle.x = canvas.width + 10 * 20;
+                    score++;
+                    scoreDisplay.textContent = score;
+                }
+
+                if (ball.x + ball.radius > obstacle.x &&
+                    ball.x - ball.radius < obstacle.x + obstacle.width &&
+                    ball.y + ball.radius > obstacle.y &&
+                    ball.y - ball.radius < obstacle.y + obstacle.height) {
+                    resetGame();
+                }
+            });
 
             requestAnimationFrame(draw);
         }
@@ -150,27 +211,41 @@
         document.addEventListener("keyup", keyUpHandler, false);
 
         function keyDownHandler(e) {
-            if(e.key == "Right" || e.key == "ArrowRight") {
+            if (e.key == "Right" || e.key == "ArrowRight") {
                 rightPressed = true;
-            }
-            else if(e.key == "Left" || e.key == "ArrowLeft") {
+            } else if (e.key == "Left" || e.key == "ArrowLeft") {
                 leftPressed = true;
-            }
-            else if(e.key == "Up" || e.key == "ArrowUp") {
+            } else if (e.key == "Up" || e.key == "ArrowUp") {
                 upPressed = true;
             }
         }
 
         function keyUpHandler(e) {
-            if(e.key == "Right" || e.key == "ArrowRight") {
+            if (e.key == "Right" || e.key == "ArrowRight") {
                 rightPressed = false;
-            }
-            else if(e.key == "Left" || e.key == "ArrowLeft") {
+            } else if (e.key == "Left" || e.key == "ArrowLeft") {
                 leftPressed = false;
-            }
-            else if(e.key == "Up" || e.key == "ArrowUp") {
+            } else if (e.key == "Up" || e.key == "ArrowUp") {
                 upPressed = false;
             }
+        }
+
+        // Touch event handlers for mobile devices
+        canvas.addEventListener("touchstart", handleTouchStart, false);
+        canvas.addEventListener("touchend", handleTouchEnd, false);
+
+        function handleTouchStart(e) {
+            const touchX = e.touches[0].clientX;
+            if (touchX > canvas.width / 2) {
+                rightPressed = true;
+            } else {
+                upPressed = true;
+            }
+        }
+
+        function handleTouchEnd(e) {
+            rightPressed = false;
+            upPressed = false;
         }
 
         // Initialize the main screen
