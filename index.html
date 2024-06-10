@@ -15,7 +15,7 @@
             margin: 0;
             background-color: #f0f0f0;
         }
-        #main-screen, #result-screen {
+        #main-screen, #result-screen, #game-screen {
             display: none;
             flex-direction: column;
             align-items: center;
@@ -33,6 +33,10 @@
             font-size: 24px;
             cursor: pointer;
         }
+        canvas {
+            border: 1px solid #000;
+            background-color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -40,16 +44,39 @@
         <button onclick="showResult('Бруйко')">Иван</button>
         <button onclick="showResult('Бруйко')">Милана</button>
         <button onclick="showResult('Петросян')">Рубен</button>
+        <button onclick="startGame()">Игра</button>
     </div>
     <div id="result-screen">
         <div class="back-button" onclick="goBack()">←</div>
         <h1 id="result-text"></h1>
     </div>
+    <div id="game-screen">
+        <div class="back-button" onclick="goBack()">←</div>
+        <canvas id="gameCanvas" width="600" height="400"></canvas>
+    </div>
 
     <script>
         const mainScreen = document.getElementById('main-screen');
         const resultScreen = document.getElementById('result-screen');
+        const gameScreen = document.getElementById('game-screen');
         const resultText = document.getElementById('result-text');
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let ball = {
+            x: canvas.width / 2,
+            y: canvas.height - 30,
+            radius: 10,
+            dx: 2,
+            dy: -2,
+            speed: 2,
+            jump: -10,
+            gravity: 0.5
+        };
+
+        let rightPressed = false;
+        let leftPressed = false;
+        let upPressed = false;
 
         function showResult(text) {
             resultText.textContent = text;
@@ -60,6 +87,90 @@
         function goBack() {
             mainScreen.style.display = 'flex';
             resultScreen.style.display = 'none';
+            gameScreen.style.display = 'none';
+        }
+
+        function startGame() {
+            mainScreen.style.display = 'none';
+            gameScreen.style.display = 'flex';
+            resetBall();
+            draw();
+        }
+
+        function resetBall() {
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height - 30;
+            ball.dx = 0;
+            ball.dy = 0;
+        }
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawRoad() {
+            ctx.beginPath();
+            ctx.rect(0, canvas.height - 10, canvas.width, 10);
+            ctx.fillStyle = "#000";
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawRoad();
+            drawBall();
+
+            if(rightPressed && ball.x < canvas.width - ball.radius) {
+                ball.x += ball.speed;
+            }
+            if(leftPressed && ball.x > ball.radius) {
+                ball.x -= ball.speed;
+            }
+            if(upPressed && ball.y == canvas.height - ball.radius - 10) {
+                ball.dy = ball.jump;
+            }
+
+            ball.dy += ball.gravity;
+            ball.y += ball.dy;
+
+            if(ball.y > canvas.height - ball.radius - 10) {
+                ball.y = canvas.height - ball.radius - 10;
+                ball.dy = 0;
+            }
+
+            requestAnimationFrame(draw);
+        }
+
+        document.addEventListener("keydown", keyDownHandler, false);
+        document.addEventListener("keyup", keyUpHandler, false);
+
+        function keyDownHandler(e) {
+            if(e.key == "Right" || e.key == "ArrowRight") {
+                rightPressed = true;
+            }
+            else if(e.key == "Left" || e.key == "ArrowLeft") {
+                leftPressed = true;
+            }
+            else if(e.key == "Up" || e.key == "ArrowUp") {
+                upPressed = true;
+            }
+        }
+
+        function keyUpHandler(e) {
+            if(e.key == "Right" || e.key == "ArrowRight") {
+                rightPressed = false;
+            }
+            else if(e.key == "Left" || e.key == "ArrowLeft") {
+                leftPressed = false;
+            }
+            else if(e.key == "Up" || e.key == "ArrowUp") {
+                upPressed = false;
+            }
         }
 
         // Initialize the main screen
