@@ -1,133 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Backgammon Game</title>
+    <title>Приложение</title>
     <style>
         body {
+            font-family: Arial, sans-serif;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
         }
-        #main-menu, #game-screen {
-            text-align: center;
-            width: 100%;
-            max-width: 600px;
-            padding: 20px;
-        }
-        .screen {
+        #main-screen, #result-screen {
             display: none;
+            flex-direction: column;
+            align-items: center;
         }
-        .active {
-            display: block;
-        }
-        .button {
-            padding: 15px 25px;
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
             margin: 10px;
-            font-size: 18px;
             cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
         }
-        .button:active {
-            background-color: #45a049;
-        }
-        #game-board {
-            width: 100%;
-            height: calc(100vh - 70px); /* Высота экрана минус высота кнопки */
-            background-image: url('game-board.jpg'); /* Укажите здесь путь к вашему изображению игрового поля */
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            position: relative;
-        }
-        .point {
+        .back-button {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: red;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div id="main-menu" class="screen active">
-        <h1>Backgammon Game</h1>
-        <button class="button" onclick="startGame()">Играть</button>
-        <button class="button" onclick="showSettings()">Настройки</button>
-        <button class="button" onclick="showWallet()">Пополнить кошелек</button>
+    <div id="main-screen">
+        <button onclick="showResult('Бруйко')">Иван</button>
+        <button onclick="showResult('Бруйко')">Милана</button>
     </div>
-    <div id="game-screen" class="screen">
-        <button class="button" onclick="goBack()">Назад</button>
-        <div id="game-board"></div>
-    </div>
-    <div id="settings-screen" class="screen">
-        <button class="button" onclick="goBack()">Назад</button>
-        <p>Настройки находятся в разработке, приходите позднее.</p>
-    </div>
-    <div id="wallet-screen" class="screen">
-        <button class="button" onclick="goBack()">Назад</button>
-        <p>Пополнение кошелька находится в разработке, приходите позднее.</p>
+    <div id="result-screen">
+        <div class="back-button" onclick="goBack()">←</div>
+        <h1 id="result-text"></h1>
     </div>
 
     <script>
-        let points = []; // Массив для хранения объектов точек
+        const mainScreen = document.getElementById('main-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const resultText = document.getElementById('result-text');
 
-        function startGame() {
-            document.getElementById('main-menu').classList.remove('active');
-            document.getElementById('game-screen').classList.add('active');
-            initializePoints();
+        function showResult(text) {
+            resultText.textContent = text;
+            mainScreen.style.display = 'none';
+            resultScreen.style.display = 'flex';
         }
 
         function goBack() {
-            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
-            document.getElementById('main-menu').classList.add('active');
+            mainScreen.style.display = 'flex';
+            resultScreen.style.display = 'none';
         }
 
-        function showSettings() {
-            document.getElementById('main-menu').classList.remove('active');
-            document.getElementById('settings-screen').classList.add('active');
-        }
-
-        function showWallet() {
-            document.getElementById('main-menu').classList.remove('active');
-            document.getElementById('wallet-screen').classList.add('active');
-        }
-
-        function initializePoints() {
-            const gameBoard = document.getElementById('game-board');
-            gameBoard.innerHTML = ''; // Очистка доски перед размещением точек
-
-            // Создаем объекты точек и добавляем их в массив
-            for (let i = 1; i <= 24; i++) {
-                const point = document.createElement('div');
-                point.classList.add('point');
-                point.style.top = '50%'; // Пока что устанавливаем координаты по центру
-                point.style.left = '50%'; // Пока что устанавливаем координаты по центру
-                gameBoard.appendChild(point);
-                points.push({
-                    number: i,
-                    element: point
-                });
-            }
-
-            // Устанавливаем координаты для каждой точки в зависимости от их порядкового номера
-            points.forEach((point, index) => {
-                if (index < 12) {
-                    point.element.style.left = `${5 + index * 7}%`;
-                } else {
-                    point.element.style.left = `${5 + (index - 12) * 7}%`;
-                    point.element.style.top = '80%';
-                }
-            });
-        }
+        // Initialize the main screen
+        mainScreen.style.display = 'flex';
     </script>
 </body>
 </html>
