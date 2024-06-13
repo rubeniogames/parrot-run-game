@@ -50,29 +50,31 @@ class GameScene extends Phaser.Scene {
 
         // Create the parrot
         this.parrot = this.add.graphics();
-        this.drawParrot(this.parrot, 100, 450);
+        this.parrot.fillStyle(0x00ff00, 1);
+        this.parrot.fillRect(100, 450, 50, 50);
 
         // Enable physics for the parrot
         this.physics.world.enable(this.parrot);
         this.parrot.body.setCollideWorldBounds(true);
 
+        // Create the bananas
+        this.bananas = this.physics.add.group();
+
+        for (let i = 0; i < 10; i++) {
+            let banana = this.add.graphics();
+            banana.fillStyle(0xffff00, 1);
+            banana.fillRect(300 + i * 200, 400, 20, 20);
+            this.physics.world.enable(banana);
+            banana.body.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+            this.bananas.add(banana);
+        }
+
+        // Add collider
+        this.physics.add.collider(this.parrot, this.bananas, this.collectBanana, null, this);
+
+        // Input
         this.cursors = this.input.keyboard.createCursorKeys();
         this.input.on('pointerup', this.jump, this);
-
-        // Create bananas
-        this.bananas = this.physics.add.group({
-            key: 'banana',
-            repeat: 10,
-            setXY: { x: 300, y: 0, stepX: 200 }
-        });
-
-        this.bananas.children.iterate((banana) => {
-            banana.graphics = this.add.graphics();
-            this.drawBanana(banana.graphics, banana.x, 100);
-            banana.body.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-        });
-
-        this.physics.add.collider(this.parrot, this.bananas, this.collectBanana, null, this);
     }
 
     update() {
@@ -88,17 +90,7 @@ class GameScene extends Phaser.Scene {
     }
 
     collectBanana(parrot, banana) {
-        banana.graphics.clear();
+        banana.clear();
         banana.disableBody(true, true);
-    }
-
-    drawParrot(graphics, x, y) {
-        graphics.fillStyle(0x00ff00, 1);
-        graphics.fillRect(x, y, 50, 50); // Simple rectangle for the parrot's body
-    }
-
-    drawBanana(graphics, x, y) {
-        graphics.fillStyle(0xffff00, 1);
-        graphics.fillRect(x, y, 20, 20); // Simple rectangle for the banana
     }
 }
