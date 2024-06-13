@@ -21,10 +21,6 @@ class StartScene extends Phaser.Scene {
         super({ key: 'StartScene' });
     }
 
-    preload() {
-        // No need to preload images
-    }
-
     create() {
         this.add.text(300, 200, 'Parrot Run', { fontSize: '64px', fill: '#fff' });
 
@@ -45,10 +41,6 @@ class StartScene extends Phaser.Scene {
 class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' });
-    }
-
-    preload() {
-        // No need to preload images
     }
 
     create() {
@@ -75,7 +67,8 @@ class GameScene extends Phaser.Scene {
         });
 
         this.bananas.children.iterate((banana) => {
-            this.drawBanana(banana, banana.x, 100);
+            banana.graphics = this.add.graphics();
+            this.drawBanana(banana.graphics, banana.x, 100);
             banana.body.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
         });
 
@@ -95,6 +88,7 @@ class GameScene extends Phaser.Scene {
     }
 
     collectBanana(parrot, banana) {
+        banana.graphics.clear();
         banana.disableBody(true, true);
     }
 
@@ -104,7 +98,6 @@ class GameScene extends Phaser.Scene {
     }
 
     drawBanana(graphics, x, y) {
-        graphics.clear();
         graphics.fillStyle(0xffff00, 1);
         graphics.fillRect(x, y, 20, 20); // Simple rectangle for the banana
     }
