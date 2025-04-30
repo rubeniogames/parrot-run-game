@@ -74,9 +74,10 @@
 <body>
   <div class="header">Магазин Овощей</div>
   <div class="products">
+
     <!-- Морковка -->
     <div class="product">
-      <img src="https://cdn.pixabay.com/photo/2017/01/20/15/06/carrot-1995059_1280.jpg" alt="Морковка">
+      <img src="images/carrot.jpg" alt="Морковка">
       <div class="info">
         <div class="name">Морковка</div>
         <div class="desc">Сочная, свежая, хрустящая морковь.</div>
@@ -87,7 +88,7 @@
 
     <!-- Капуста -->
     <div class="product">
-      <img src="https://cdn.pixabay.com/photo/2018/06/17/16/26/cabbage-3482138_1280.jpg" alt="Капуста">
+      <img src="images/cabbage.jpg" alt="Капуста">
       <div class="info">
         <div class="name">Капуста</div>
         <div class="desc">Белокочанная, идеально для салата.</div>
@@ -98,7 +99,7 @@
 
     <!-- Помидор -->
     <div class="product">
-      <img src="https://cdn.pixabay.com/photo/2015/03/24/08/54/tomatoes-686986_1280.jpg" alt="Помидор">
+      <img src="images/tomato.jpg" alt="Помидор">
       <div class="info">
         <div class="name">Помидор</div>
         <div class="desc">Красные и спелые томаты из теплицы.</div>
@@ -109,7 +110,7 @@
 
     <!-- Картошка -->
     <div class="product">
-      <img src="https://cdn.pixabay.com/photo/2017/01/20/15/06/potatoes-1995060_1280.jpg" alt="Картошка">
+      <img src="images/potato.jpg" alt="Картошка">
       <div class="info">
         <div class="name">Картошка</div>
         <div class="desc">Крупная, чистая, готова к варке.</div>
@@ -120,7 +121,7 @@
 
     <!-- Лук -->
     <div class="product">
-      <img src="https://cdn.pixabay.com/photo/2016/06/18/17/42/onion-1469910_1280.jpg" alt="Лук">
+      <img src="images/onion.jpg" alt="Лук">
       <div class="info">
         <div class="name">Лук</div>
         <div class="desc">Острый, для жарки и салатов.</div>
@@ -128,13 +129,13 @@
         <button onclick="buy('Лук')">Купить</button>
       </div>
     </div>
+
   </div>
 
   <script>
     Telegram.WebApp.ready();
     function buy(itemName) {
       alert("Вы выбрали: " + itemName);
-      // Здесь позже можно вставить оплату через Telegram Stars
     }
   </script>
 </body>
