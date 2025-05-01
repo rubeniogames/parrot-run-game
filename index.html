@@ -2,22 +2,76 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Магазин</title>
+  <title>Магазин Овощей</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">
   <style>
-    /* Стилизация страницы */
-    body { font-family: 'Roboto Condensed', sans-serif; background: #f9f9f9; margin: 0; }
-    .header { background: #4CAF50; color: white; text-align: center; padding: 16px; font-size: 22px; }
-    .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; padding: 16px; }
-    .product { background: white; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; }
-    .product img { width: 100%; height: 130px; object-fit: cover; }
-    .info { padding: 12px; flex-grow: 1; }
-    .name { font-size: 18px; font-weight: bold; }
-    .desc { font-size: 14px; color: #666; margin: 6px 0; }
-    .price { font-size: 16px; font-weight: bold; margin: 6px 0; }
-    button { width: 100%; background: #4CAF50; color: white; border: none; padding: 10px; cursor: pointer; font-size: 14px; }
-    button:hover { background: #3e9443; }
+    body {
+      font-family: 'Roboto Condensed', sans-serif;
+      background: #f5f5f7;
+      margin: 0;
+      padding: 0;
+      color: #1d1d1f;
+    }
+    .header {
+      background: white;
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      padding: 24px 0;
+      border-bottom: 1px solid #ddd;
+    }
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+      padding: 40px;
+    }
+    .product {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+    .product:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .product img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .info {
+      padding: 20px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .name {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .desc {
+      font-size: 14px;
+      color: #555;
+      flex-grow: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .price {
+      margin-top: 16px;
+      font-size: 18px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -27,7 +81,7 @@
   <script>
     Telegram.WebApp.ready();
 
-    const SHEET_ID = '1uGGQCNDEiNFx2Gp7dDqomV8PIEqFe32JrOMVvAQiXlA';  // 👈 Вставь сюда свой ID
+    const SHEET_ID = '1uGGQCNDEiNFx2Gp7dDqomV8PIEqFe32JrOMVvAQiXlA';
     const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
     fetch(SHEET_URL)
@@ -37,26 +91,22 @@
         const rows = json.table.rows;
         const container = document.getElementById('products');
 
-        rows.forEach(row => {
+        rows.forEach((row, index) => {
           const [name, desc, price, image] = row.c.map(cell => cell?.v || '');
           const el = document.createElement('div');
           el.className = 'product';
+          el.onclick = () => window.open(`product.html?i=${index}`, '_blank');
           el.innerHTML = `
             <img src="${image}" alt="${name}">
             <div class="info">
               <div class="name">${name}</div>
               <div class="desc">${desc}</div>
               <div class="price">${price}₽</div>
-              <button onclick="buy('${name}')">Купить</button>
             </div>
           `;
           container.appendChild(el);
         });
       });
-
-    function buy(name) {
-      alert("Вы выбрали: " + name);
-    }
   </script>
 </body>
 </html>
