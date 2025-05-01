@@ -1,61 +1,51 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Магазин Овощей</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
     body {
-      font-family: 'Roboto Condensed', sans-serif;
-      background: #f5f5f7;
+      font-family: 'Roboto', sans-serif;
+      background: #f4f4f7;
       margin: 0;
-      padding: 0;
-      color: #1d1d1f;
+      padding: 20px;
     }
     .header {
-      background: white;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 20px;
       text-align: center;
-      font-size: 28px;
-      font-weight: bold;
-      padding: 24px 0;
-      border-bottom: 1px solid #ddd;
     }
-    .products {
+    .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 32px;
-      padding: 40px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
     }
-    .product {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
       overflow: hidden;
-      transition: transform 0.3s, box-shadow 0.3s;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
+      transition: transform 0.2s ease;
+      text-decoration: none;
+      color: inherit;
     }
-    .product:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    .card:hover {
+      transform: translateY(-5px);
     }
-    .product img {
+    .card img {
       width: 100%;
-      height: 200px;
+      height: 180px;
       object-fit: cover;
     }
     .info {
-      padding: 20px;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
+      padding: 16px;
     }
     .name {
       font-size: 20px;
       font-weight: 600;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -63,40 +53,39 @@
     .desc {
       font-size: 14px;
       color: #555;
-      flex-grow: 1;
+      height: 38px;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .price {
-      margin-top: 16px;
-      font-size: 18px;
+      margin-top: 10px;
+      font-size: 16px;
       font-weight: bold;
+      color: #2e7d32;
     }
   </style>
 </head>
 <body>
   <div class="header">Магазин Овощей</div>
-  <div class="products" id="products"></div>
+  <div class="grid" id="products"></div>
 
   <script>
-    Telegram.WebApp.ready();
-
     const SHEET_ID = '1uGGQCNDEiNFx2Gp7dDqomV8PIEqFe32JrOMVvAQiXlA';
     const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
     fetch(SHEET_URL)
       .then(res => res.text())
-      .then(data => {
-        const json = JSON.parse(data.substring(47).slice(0, -2));
+      .then(text => {
+        const json = JSON.parse(text.substring(47).slice(0, -2));
         const rows = json.table.rows;
         const container = document.getElementById('products');
 
-        rows.forEach((row, index) => {
+        rows.forEach(row => {
           const [name, desc, price, image] = row.c.map(cell => cell?.v || '');
-          const el = document.createElement('div');
-          el.className = 'product';
-          el.onclick = () => window.open(`product.html?i=${index}`, '_blank');
-          el.innerHTML = `
+          const link = document.createElement('a');
+          link.href = `product.html?item=${encodeURIComponent(name)}`;
+          link.className = 'card';
+          link.innerHTML = `
             <img src="${image}" alt="${name}">
             <div class="info">
               <div class="name">${name}</div>
@@ -104,7 +93,7 @@
               <div class="price">${price}₽</div>
             </div>
           `;
-          container.appendChild(el);
+          container.appendChild(link);
         });
       });
   </script>
