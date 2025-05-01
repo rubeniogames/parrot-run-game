@@ -2,140 +2,60 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Магазин Овощей</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Магазин</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      font-family: 'Roboto Condensed', sans-serif;
-      background: #f8f8f8;
-    }
-    .header {
-      text-align: center;
-      padding: 20px;
-      font-size: 24px;
-      font-weight: bold;
-      background-color: #4CAF50;
-      color: white;
-    }
-    .products {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 15px;
-      padding: 20px;
-    }
-    .product {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-    .product img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-    }
-    .info {
-      padding: 10px;
-      flex-grow: 1;
-    }
-    .name {
-      font-size: 18px;
-      margin: 0 0 5px;
-    }
-    .desc {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 10px;
-    }
-    .price {
-      font-weight: bold;
-      font-size: 16px;
-      margin-bottom: 10px;
-    }
-    button {
-      background-color: #4CAF50;
-      border: none;
-      color: white;
-      padding: 10px;
-      font-size: 14px;
-      cursor: pointer;
-      width: 100%;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
+    /* Стилизация страницы */
+    body { font-family: 'Roboto Condensed', sans-serif; background: #f9f9f9; margin: 0; }
+    .header { background: #4CAF50; color: white; text-align: center; padding: 16px; font-size: 22px; }
+    .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; padding: 16px; }
+    .product { background: white; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; }
+    .product img { width: 100%; height: 130px; object-fit: cover; }
+    .info { padding: 12px; flex-grow: 1; }
+    .name { font-size: 18px; font-weight: bold; }
+    .desc { font-size: 14px; color: #666; margin: 6px 0; }
+    .price { font-size: 16px; font-weight: bold; margin: 6px 0; }
+    button { width: 100%; background: #4CAF50; color: white; border: none; padding: 10px; cursor: pointer; font-size: 14px; }
+    button:hover { background: #3e9443; }
   </style>
 </head>
 <body>
   <div class="header">Магазин Овощей</div>
-  <div class="products">
-
-    <!-- Морковка -->
-    <div class="product">
-      <img src="images/carrot.jpg" alt="Морковка">
-      <div class="info">
-        <div class="name">Морковка</div>
-        <div class="desc">Сочная, свежая, хрустящая морковь.</div>
-        <div class="price">12₽</div>
-        <button onclick="buy('Морковка')">Купить</button>
-      </div>
-    </div>
-
-    <!-- Капуста -->
-    <div class="product">
-      <img src="images/cabbage.jpg" alt="Капуста">
-      <div class="info">
-        <div class="name">Капуста</div>
-        <div class="desc">Белокочанная, идеально для салата.</div>
-        <div class="price">25₽</div>
-        <button onclick="buy('Капуста')">Купить</button>
-      </div>
-    </div>
-
-    <!-- Помидор -->
-    <div class="product">
-      <img src="images/tomato.jpg" alt="Помидор">
-      <div class="info">
-        <div class="name">Помидор</div>
-        <div class="desc">Красные и спелые томаты из теплицы.</div>
-        <div class="price">18₽</div>
-        <button onclick="buy('Помидор')">Купить</button>
-      </div>
-    </div>
-
-    <!-- Картошка -->
-    <div class="product">
-      <img src="images/potato.jpg" alt="Картошка">
-      <div class="info">
-        <div class="name">Картошка</div>
-        <div class="desc">Крупная, чистая, готова к варке.</div>
-        <div class="price">20₽</div>
-        <button onclick="buy('Картошка')">Купить</button>
-      </div>
-    </div>
-
-    <!-- Лук -->
-    <div class="product">
-      <img src="images/onion.jpg" alt="Лук">
-      <div class="info">
-        <div class="name">Лук</div>
-        <div class="desc">Острый, для жарки и салатов.</div>
-        <div class="price">15₽</div>
-        <button onclick="buy('Лук')">Купить</button>
-      </div>
-    </div>
-
-  </div>
+  <div class="products" id="products"></div>
 
   <script>
     Telegram.WebApp.ready();
-    function buy(itemName) {
-      alert("Вы выбрали: " + itemName);
+
+    const SHEET_ID = '1uGGQCNDEiNFx2Gp7dDqomV8PIEqFe32JrOMVvAQiXlA';  // 👈 Вставь сюда свой ID
+    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+
+    fetch(SHEET_URL)
+      .then(res => res.text())
+      .then(data => {
+        const json = JSON.parse(data.substring(47).slice(0, -2));
+        const rows = json.table.rows;
+        const container = document.getElementById('products');
+
+        rows.forEach(row => {
+          const [name, desc, price, image] = row.c.map(cell => cell?.v || '');
+          const el = document.createElement('div');
+          el.className = 'product';
+          el.innerHTML = `
+            <img src="${image}" alt="${name}">
+            <div class="info">
+              <div class="name">${name}</div>
+              <div class="desc">${desc}</div>
+              <div class="price">${price}₽</div>
+              <button onclick="buy('${name}')">Купить</button>
+            </div>
+          `;
+          container.appendChild(el);
+        });
+      });
+
+    function buy(name) {
+      alert("Вы выбрали: " + name);
     }
   </script>
 </body>
