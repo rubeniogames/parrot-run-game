@@ -3,51 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <title>Детали товара</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: 'Roboto Condensed', sans-serif; margin: 0; background: #f5f5f5; color: #333; }
-    .container { max-width: 800px; margin: 0 auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .image { width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; }
-    .title { font-size: 28px; font-weight: bold; margin-top: 20px; }
-    .desc { font-size: 16px; margin: 20px 0; line-height: 1.6; }
-    .price { font-size: 22px; font-weight: bold; color: #4CAF50; margin-bottom: 20px; }
-    button {
-      background: #4CAF50; color: white; border: none; padding: 12px 20px;
-      border-radius: 8px; cursor: pointer; font-size: 16px;
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #fff;
+      margin: 0;
+      padding: 20px;
     }
-    button:hover { background: #3e9443; }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    img {
+      width: 100%;
+      border-radius: 12px;
+      max-height: 350px;
+      object-fit: cover;
+    }
+    .name {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 20px 0 10px;
+    }
+    .desc {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+    .price {
+      font-size: 24px;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+    .back {
+      display: inline-block;
+      margin-top: 30px;
+      font-size: 14px;
+      text-decoration: none;
+      color: #007bff;
+    }
   </style>
 </head>
 <body>
   <div class="container" id="product"></div>
 
   <script>
-    // Получаем параметры из URL
     const params = new URLSearchParams(window.location.search);
-    const name = params.get("name");
-
+    const itemName = params.get("item");
     const SHEET_ID = '1uGGQCNDEiNFx2Gp7dDqomV8PIEqFe32JrOMVvAQiXlA';
     const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
     fetch(SHEET_URL)
       .then(res => res.text())
-      .then(data => {
-        const json = JSON.parse(data.substring(47).slice(0, -2));
-        const row = json.table.rows.find(row => (row.c[0]?.v || '') === name);
+      .then(text => {
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+        const rows = json.table.rows;
+        const product = rows
+          .map(row => row.c.map(cell => cell?.v || ''))
+          .find(([name]) => name === itemName);
 
-        if (!row) {
-          document.getElementById('product').innerText = 'Товар не найден';
+        const container = document.getElementById('product');
+
+        if (!product) {
+          container.innerHTML = `<h2>Товар не найден</h2><a class="back" href="index.html">← Вернуться назад</a>`;
           return;
         }
 
-        const [nameCell, desc, price, image] = row.c.map(cell => cell?.v || '');
+        const [name, desc, price, image] = product;
 
-        document.getElementById('product').innerHTML = `
-          <img class="image" src="${image}" alt="${name}">
-          <div class="title">${name}</div>
-          <div class="price">${price} ₽</div>
+        container.innerHTML = `
+          <img src="${image}" alt="${name}">
+          <div class="name">${name}</div>
           <div class="desc">${desc}</div>
-          <button onclick="alert('Товар — ${name} добавлен в корзину!')">Купить</button>
+          <div class="price">${price}₽</div>
+          <a class="back" href="index.html">← Вернуться в магазин</a>
         `;
       });
   </script>
