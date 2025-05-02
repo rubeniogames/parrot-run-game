@@ -5,19 +5,67 @@
   <title>Магазин</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body { font-family: 'Roboto Condensed', sans-serif; background: #f9f9f9; margin: 0; }
     .header { display: flex; justify-content: center; align-items: center; padding: 12px; }
     .header img { width: 1.5cm; height: 1.5cm; object-fit: contain; }
-    .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; padding: 16px; }
-    .product { background: white; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; }
-    .product img { width: 100%; height: 130px; object-fit: cover; }
-    .info { padding: 12px; flex-grow: 1; }
-    .name { font-size: 18px; font-weight: bold; }
-    .desc { font-size: 14px; color: #666; margin: 6px 0; }
-    .price { font-size: 16px; font-weight: bold; margin: 6px 0; }
-    button { width: 100%; background: #4CAF50; color: white; border: none; padding: 10px; cursor: pointer; font-size: 14px; }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      padding: 16px;
+    }
+    .product {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 300px;
+    }
+    .product img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+    .info {
+      padding: 12px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .name { font-size: 18px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .desc { font-size: 14px; color: #666; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .price { font-size: 16px; font-weight: bold; margin-top: 6px; }
+    button {
+      width: 100%;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
     button:hover { background: #3e9443; }
+
+    @media (max-width: 480px) {
+      .product {
+        height: 280px;
+      }
+      .name {
+        font-size: 16px;
+      }
+      .desc {
+        font-size: 13px;
+      }
+      .price {
+        font-size: 15px;
+      }
+    }
   </style>
 </head>
 <body>
