@@ -1,16 +1,25 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Магазин</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Магазин Овощей</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: 'Roboto Condensed', sans-serif; background: #f9f9f9; margin: 0; }
-    .header { display: flex; justify-content: center; align-items: center; padding: 12px; }
-    .header img { width: 1.5cm; height: 1.5cm; object-fit: contain; }
-
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Roboto Condensed', sans-serif;
+      background: #f4f4f4;
+    }
+    .header {
+      text-align: center;
+      padding: 10px 0;
+    }
+    .header img {
+      width: 1.5cm;
+      height: 1.5cm;
+    }
     .products {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -18,13 +27,10 @@
       padding: 16px;
     }
     .product {
-      background: white;
+      background: #fff;
       border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      height: 300px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
       cursor: pointer;
       transition: transform 0.2s ease;
     }
@@ -38,31 +44,35 @@
     }
     .info {
       padding: 12px;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
     }
-    .name { font-size: 18px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .desc { font-size: 14px; color: #666; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-    .price { font-size: 16px; font-weight: bold; margin-top: 6px; }
-
-    @media (max-width: 600px) {
-      .products {
-        grid-template-columns: 1fr;
-      }
+    .name {
+      font-size: 16px;
+      font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .desc {
+      font-size: 14px;
+      color: #555;
+      height: 36px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .price {
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 6px;
     }
   </style>
 </head>
 <body>
   <div class="header">
-    <img src="https://i.ibb.co/G4VgNjsF/Chat-GPT-Image-2-2025-10-30-36.png" alt="Header">
+    <img src="https://i.ibb.co/G4VgNjsF/Chat-GPT-Image-2-2025-10-30-36.png" alt="Логотип" />
   </div>
   <div class="products" id="products"></div>
 
   <script>
-    Telegram.WebApp.ready();
-
     const SHEET_ID = '1uGGQCNDEiNFx2Gp7dDqomV8PIEqFe32JrOMVvAQiXlA';
     const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
@@ -77,9 +87,9 @@
           const [name, desc, price, image] = row.c.map(cell => cell?.v || '');
           const el = document.createElement('div');
           el.className = 'product';
-          el.onclick = () => window.location.href = `product.html?id=${index}`;
+          el.onclick = () => location.href = `product.html?index=${index}`;
           el.innerHTML = `
-            <img src="${image}" alt="${name}">
+            <img src="${image}" alt="${name}" />
             <div class="info">
               <div class="name">${name}</div>
               <div class="desc">${desc}</div>
