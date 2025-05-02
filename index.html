@@ -13,7 +13,7 @@
 
     .products {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap: 16px;
       padding: 16px;
     }
@@ -25,6 +25,11 @@
       display: flex;
       flex-direction: column;
       height: 300px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .product:hover {
+      transform: scale(1.02);
     }
     .product img {
       width: 100%;
@@ -41,29 +46,10 @@
     .name { font-size: 18px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .desc { font-size: 14px; color: #666; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
     .price { font-size: 16px; font-weight: bold; margin-top: 6px; }
-    button {
-      width: 100%;
-      background: #4CAF50;
-      color: white;
-      border: none;
-      padding: 10px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    button:hover { background: #3e9443; }
 
-    @media (max-width: 480px) {
-      .product {
-        height: 280px;
-      }
-      .name {
-        font-size: 16px;
-      }
-      .desc {
-        font-size: 13px;
-      }
-      .price {
-        font-size: 15px;
+    @media (max-width: 600px) {
+      .products {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -87,26 +73,22 @@
         const rows = json.table.rows;
         const container = document.getElementById('products');
 
-        rows.forEach(row => {
+        rows.forEach((row, index) => {
           const [name, desc, price, image] = row.c.map(cell => cell?.v || '');
           const el = document.createElement('div');
           el.className = 'product';
+          el.onclick = () => window.location.href = `product.html?id=${index}`;
           el.innerHTML = `
             <img src="${image}" alt="${name}">
             <div class="info">
               <div class="name">${name}</div>
               <div class="desc">${desc}</div>
               <div class="price">${price}₽</div>
-              <button onclick="buy('${name}')">Купить</button>
             </div>
           `;
           container.appendChild(el);
         });
       });
-
-    function buy(name) {
-      alert("Вы выбрали: " + name);
-    }
   </script>
 </body>
 </html>
