@@ -1,101 +1,61 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>Магазин Овощей</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <title>Магазин</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background: #f4f4f7;
-      margin: 0;
-      padding: 20px;
-    }
-    .header {
-      font-size: 32px;
-      font-weight: 700;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-    }
-    .card {
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-      overflow: hidden;
-      transition: transform 0.2s ease;
-      text-decoration: none;
-      color: inherit;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-    }
-    .card img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-    }
-    .info {
-      padding: 16px;
-    }
-    .name {
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 6px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .desc {
-      font-size: 14px;
-      color: #555;
-      height: 38px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .price {
-      margin-top: 10px;
-      font-size: 16px;
-      font-weight: bold;
-      color: #2e7d32;
-    }
+    body { font-family: 'Roboto Condensed', sans-serif; background: #f9f9f9; margin: 0; }
+    .header img { width: 100%; max-height: 160px; object-fit: cover; }
+    .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; padding: 16px; }
+    .product { background: white; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; }
+    .product img { width: 100%; height: 130px; object-fit: cover; }
+    .info { padding: 12px; flex-grow: 1; }
+    .name { font-size: 18px; font-weight: bold; }
+    .desc { font-size: 14px; color: #666; margin: 6px 0; }
+    .price { font-size: 16px; font-weight: bold; margin: 6px 0; }
+    button { width: 100%; background: #4CAF50; color: white; border: none; padding: 10px; cursor: pointer; font-size: 14px; }
+    button:hover { background: #3e9443; }
   </style>
 </head>
 <body>
-  <div class="header">Магазин Овощей</div>
-  <div class="grid" id="products"></div>
+  <div class="header"><img src="https://i.ibb.co/G4VgNjsF/Chat-GPT-Image-2-2025-10-30-36.png" alt="Header"></div>
+  <div class="products" id="products"></div>
 
   <script>
+    Telegram.WebApp.ready();
+
     const SHEET_ID = '1uGGQCNDEiNFx2Gp7dDqomV8PIEqFe32JrOMVvAQiXlA';
     const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
     fetch(SHEET_URL)
       .then(res => res.text())
-      .then(text => {
-        const json = JSON.parse(text.substring(47).slice(0, -2));
+      .then(data => {
+        const json = JSON.parse(data.substring(47).slice(0, -2));
         const rows = json.table.rows;
         const container = document.getElementById('products');
 
         rows.forEach(row => {
           const [name, desc, price, image] = row.c.map(cell => cell?.v || '');
-          const link = document.createElement('a');
-          link.href = `product.html?item=${encodeURIComponent(name)}`;
-          link.className = 'card';
-          link.innerHTML = `
+          const el = document.createElement('div');
+          el.className = 'product';
+          el.innerHTML = `
             <img src="${image}" alt="${name}">
             <div class="info">
               <div class="name">${name}</div>
               <div class="desc">${desc}</div>
               <div class="price">${price}₽</div>
+              <button onclick="buy('${name}')">Купить</button>
             </div>
           `;
-          container.appendChild(link);
+          container.appendChild(el);
         });
       });
+
+    function buy(name) {
+      alert("Вы выбрали: " + name);
+    }
   </script>
 </body>
 </html>
