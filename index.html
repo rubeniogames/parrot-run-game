@@ -1,6 +1,3 @@
-# Создаём одностраничный index.html (SPA), который загружает товары и отображает карточку внутри той же страницы
-
-spa_index_html = """
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -178,10 +175,3 @@ spa_index_html = """
   </script>
 </body>
 </html>
-"""
-
-# Сохраняем SPA версию index.html
-spa_path = "/mnt/data/index_spa.html"
-Path(spa_path).write_text(spa_index_html, encoding="utf-8")
-
-spa_path
